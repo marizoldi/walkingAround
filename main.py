@@ -58,8 +58,14 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, dt):
 
+        # Animation timer
         self.timer += dt
 
+        while self.timer >= self.frame_duration:
+            self.timer = 0
+            self.current_image = (self.current_image + 1) % 5
+
+        # Movement
         self.speedX = 0
         self.speedY = 0
 
@@ -72,8 +78,13 @@ class Player(pygame.sprite.Sprite):
         if keystate[K_DOWN]:
             self.speedY = 1
 
-        self.rect.x += self.speedX
-        self.rect.y += self.speedY
+        # Instead of
+        # self.rect.x += self.speedX
+        # self.rect.y += self.speedY
+
+        # we do..
+        self.rect.x = (self.rect.x + self.speedX * 5) % SCREEN_WIDTH
+        self.rect.y = (self.rect.y + self.speedY * 5) % SCREEN_HEIGHT
 
         if self.rect.right > 600:
             self.rect.right = 600
@@ -89,14 +100,7 @@ class Player(pygame.sprite.Sprite):
         if self.speedY == -1:
             self.image = image_up_list[self.current_image]
 
-        while self.timer >= self.frame_duration:
-            self.timer -= self.frame_duration
-            self.current_image += 1
-            if self.current_image == 4:
-                self.current_image = 0
 
-        self.rect.x = (self.rect.x + self.speedX*5)% SCREEN_WIDTH
-        self.rect.y = (self.rect.y + self.speedY*5)% SCREEN_HEIGHT
 
 player = Player()
 all_sprites_list = pygame.sprite.Group()
